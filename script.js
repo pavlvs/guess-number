@@ -11,6 +11,10 @@ let score
 let secretNumber
 let highscore = 0
 
+const displayMessage = function (message) {
+    document.querySelector('.message').textContent = message
+}
+
 reset()
 
 function reset() {
@@ -24,25 +28,15 @@ function reset() {
     document.querySelector('.guess').value = ''
 }
 
-function updateScore() {
-    if (score > 0) {
-        score--
-        document.querySelector('.score').textContent = score
-    } else {
-        document.querySelector('.message').textContent = 'Game Over. You lost!'
-    }
-}
-
 document.querySelector('.check').addEventListener('click', ev => {
     const guess = Number(document.querySelector('.guess').value)
-    console.log(guess, typeof guess)
 
     // When there is no input
     if (!guess) {
-        document.querySelector('.message').textContent = '⛔ No number!'
+        displayMessage('⛔ No number!')
         // When guess is correct
     } else if (guess === secretNumber) {
-        document.querySelector('.message').textContent = 'Correct!'
+        displayMessage('Correct number!')
         document.querySelector('body').style.backgroundColor = '#60b347'
         document.querySelector('.number').style.width = '30rem'
         document.querySelector('.number').textContent = secretNumber
@@ -50,14 +44,16 @@ document.querySelector('.check').addEventListener('click', ev => {
             highscore = score
             document.querySelector('.highscore').textContent = highscore
         }
-        // When guess is too high
-    } else if (guess > secretNumber) {
-        document.querySelector('.message').textContent = 'Too high'
-        updateScore()
-        // When guess is too low
-    } else if (guess < secretNumber) {
-        document.querySelector('.message').textContent = 'Too low'
-        updateScore()
+    } else if (guess !== secretNumber) {
+        let messageText = guess > secretNumber ? 'Too high' : 'Too low'
+        displayMessage(messageText)
+
+        if (score > 0) {
+            score--
+            document.querySelector('.score').textContent = score
+        } else {
+            displayMessage('Game Over. You lost!')
+        }
     }
 })
 
